@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🇮🇸 아이슬란드 신혼여행 플래너</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c1018;--surf:#141921;--surf2:#1b2230;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#e8edf5;--text2:#8c97ad;--muted:#4e5a6e;
+  --accent:#7ab8d4;--green:#5bb89e;--gold:#c8a66c;
+  --purple:#7d87c8;--red:#d46e6e;--warn:#c9a055;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:1.7;}
+
+/* HERO */
+.hero{position:relative;height:100vh;min-height:560px;max-height:820px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:90px;text-align:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1800&q=80') center/cover no-repeat;filter:brightness(.42);}
+.hero-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(12,16,24,1) 0%,rgba(12,16,24,.55) 38%,rgba(12,16,24,.08) 100%);}
+.hero-content{position:relative;z-index:2;}
+.hero-eye{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--green);letter-spacing:.15em;margin-bottom:18px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(40px,7vw,72px);line-height:1.1;margin-bottom:14px;text-shadow:0 2px 24px rgba(0,0,0,.6);}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero-sub{font-size:14px;color:rgba(220,230,245,.72);letter-spacing:.04em;margin-bottom:28px;}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.hb{padding:5px 16px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid;backdrop-filter:blur(4px);}
+.hb-b{border-color:rgba(122,184,212,.45);color:#9ad0e8;background:rgba(122,184,212,.1);}
+.hb-g{border-color:rgba(91,184,158,.45);color:#7dd4b8;background:rgba(91,184,158,.1);}
+.hb-gold{border-color:rgba(200,166,108,.45);color:#dfc07a;background:rgba(200,166,108,.1);}
+.hero-arrow{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;z-index:2;color:rgba(255,255,255,.35);font-size:11px;letter-spacing:.1em;}
+.arrow-line{width:1px;height:28px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.3));}
+
+/* NAV */
+.nav-wrap{position:sticky;top:0;z-index:100;background:rgba(12,16,24,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.nav{display:flex;max-width:1160px;margin:0 auto;padding:0 20px;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{padding:13px 17px;background:none;border:none;color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;}
+.nb:hover{color:var(--text2);}
+.nb.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* MAIN */
+main{max-width:1160px;margin:0 auto;padding:52px 20px 90px;}
+.section{display:none;}
+.section.active{display:block;}
+.sh{margin-bottom:32px;}
+.sh h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:28px;}
+.sh p{font-size:13px;color:var(--text2);margin-top:6px;}
+.div{width:36px;height:1.5px;background:linear-gradient(90deg,var(--accent),transparent);margin:10px 0;}
+
+/* ══════════════════════════════════════════════
+   TIMETABLE — 시간표 형식
+══════════════════════════════════════════════ */
+.tt-legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.tt-leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
+.tt-leg-dot{width:10px;height:10px;border-radius:50%;}
+
+.tt-scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--border);}
+.tt-table{width:100%;border-collapse:collapse;min-width:900px;}
+.tt-head{background:rgba(255,255,255,.03);}
+.tt-head th{padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border2);}
+.tt-head th.time-col{width:90px;text-align:center;}
+.tt-head th.loc-col{width:120px;}
+.tt-head th.act-col{}
+.tt-head th.tag-col{width:180px;}
+
+.tt-day-header td{
+  padding:9px 16px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,255,255,.025);
+  color:var(--muted);
+  border-top:1px solid var(--border2);
+  border-bottom:1px solid var(--border);
+}
+.tt-day-header.ams td{background:rgba(200,166,108,.07);color:var(--gold);}
+.tt-day-header.rkv td{background:rgba(122,184,212,.06);color:var(--accent);}
+.tt-day-header.south td{background:rgba(91,184,158,.06);color:var(--green);}
+.tt-day-header.north td{background:rgba(125,135,200,.07);color:var(--purple);}
+.tt-day-header.fly td{background:rgba(255,255,255,.03);color:var(--text2);}
+
+.tt-row{border-bottom:1px solid var(--border);}
+.tt-row:last-child{border-bottom:none;}
+.tt-row:hover td{background:rgba(255,255,255,.015);}
+.tt-row td{padding:11px 14px;vertical-align:top;}
+
+.time-cell{text-align:center;white-space:nowrap;}
+.time-badge{display:inline-block;font-size:11.5px;font-weight:600;color:var(--text2);background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-variant-numeric:tabular-nums;letter-spacing:.03em;}
+.time-arrow{display:block;font-size:10px;color:var(--muted);margin-top:3px;}
+
+.loc-cell{white-space:nowrap;}
+.loc-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:8px;border:1px solid;}
+.lc-ams{border-color:rgba(200,166,108,.35);color:var(--gold);background:rgba(200,166,108,.07);}
+.lc-rkv{border-color:rgba(122,184,212,.35);color:var(--accent);background:rgba(122,184,212,.07);}
+.lc-south{border-color:rgba(91,184,158,.35);color:var(--green);background:rgba(91,184,158,.07);}
+.lc-north{border-color:rgba(125,135,200,.35);color:var(--purple);background:rgba(125,135,200,.07);}
+.lc-fly{border-color:rgba(255,255,255,.15);color:var(--text2);background:rgba(255,255,255,.04);}
+
+.act-cell .act-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.act-cell .act-desc{font-size:12.5px;color:var(--text2);line-height:1.55;}
+.act-cell .act-note{font-size:11.5px;color:var(--muted);margin-top:3px;font-style:italic;}
+
+.tag-cell{vertical-align:middle;}
+.tags{display:flex;flex-direction:column;gap:4px;}
+.tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:8px;border:1px solid;white-space:nowrap;width:fit-content;}
+.tag-b{border-color:rgba(122,184,212,.3);color:var(--accent);}
+.tag-g{border-color:rgba(91,184,158,.3);color:var(--green);}
+.tag-gold{border-color:rgba(200,166,108,.3);color:var(--gold);}
+.tag-p{border-color:rgba(125,135,200,.3);color:var(--purple);}
+.tag-r{border-color:rgba(212,110,110,.3);color:var(--red);}
+.aurora-tag{background:rgba(91,184,158,.1);border-color:rgba(91,184,158,.35);color:var(--green);font-weight:600;}
+
+.km-bar{display:flex;align-items:center;gap:5px;margin-top:5px;font-size:11px;color:var(--muted);}
+.km-icon{font-size:13px;}
+
+/* ══════════════════════════════════════════════
+   AURORA
+══════════════════════════════════════════════ */
+.aurora-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px;margin-bottom:26px;}
+.am{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:17px;}
+.am.peak{border-color:rgba(200,166,108,.32);background:linear-gradient(135deg,rgba(200,166,108,.05),var(--surf));}
+.am.good{border-color:rgba(91,184,158,.28);background:linear-gradient(135deg,rgba(91,184,158,.04),var(--surf));}
+.am.trip{border-color:rgba(200,166,108,.42);background:linear-gradient(135deg,rgba(200,166,108,.09),var(--surf));}
+.am-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.am-mo{font-size:14px;font-weight:600;}
+.ambadge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:7px;}
+.ambadge.best{background:rgba(200,166,108,.15);color:var(--gold);border:1px solid rgba(200,166,108,.3);}
+.ambadge.good{background:rgba(91,184,158,.12);color:var(--green);border:1px solid rgba(91,184,158,.25);}
+.ambadge.fair{background:rgba(125,135,200,.1);color:var(--purple);border:1px solid rgba(125,135,200,.2);}
+.ambadge.trip{background:rgba(200,166,108,.18);color:#e0c07a;border:1px solid rgba(200,166,108,.4);}
+.am-bar-bg{background:rgba(255,255,255,.05);border-radius:3px;height:5px;margin-bottom:8px;overflow:hidden;}
+.am-bar{height:100%;border-radius:3px;}
+.am-bar.g{background:linear-gradient(90deg,var(--green),var(--accent));}
+.am-bar.gold{background:linear-gradient(90deg,var(--gold),#e8c47a);}
+.am-bar.p{background:linear-gradient(90deg,var(--purple),#9ea8e8);}
+.am-pct{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--text);}
+.am-pct span{font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--muted);}
+.am-note{font-size:11.5px;color:var(--text2);margin-top:5px;line-height:1.5;}
+.aurora-reco{background:rgba(200,166,108,.06);border:1px solid rgba(200,166,108,.22);border-radius:10px;padding:20px 24px;margin-bottom:22px;}
+.aurora-reco h3{font-size:14px;font-weight:600;color:var(--gold);margin-bottom:14px;}
+.reco-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;}
+.reco-item{font-size:13px;color:var(--text2);padding:8px 0;border-bottom:1px solid var(--border);}
+.reco-day{color:var(--green);font-weight:700;}
+.reco-sub{font-size:11.5px;color:var(--muted);}
+.tips-box{background:var(--surf);border:1px solid rgba(91,184,158,.18);border-radius:10px;padding:20px 24px;}
+.tips-box h3{font-size:14px;font-weight:600;color:var(--green);margin-bottom:14px;}
+.tg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.tip2{font-size:13px;color:var(--text2);display:flex;gap:8px;line-height:1.55;}
+.tip2-icon{color:var(--green);flex-shrink:0;margin-top:2px;}
+
+/* ══════════════════════════════════════════════
+   PLACE CARDS
+══════════════════════════════════════════════ */
+.cat-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.cf{padding:6px 14px;border-radius:18px;border:1px solid var(--border);background:none;color:var(--text2);font-family:'Noto Sans KR',sans-serif;font-size:12.5px;cursor:pointer;transition:all .18s;}
+.cf:hover{border-color:var(--border2);}
+.cf.active{border-color:var(--accent);color:var(--accent);background:rgba(122,184,212,.07);}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px;}
+.pcard{background:var(--surf);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .22s,border-color .22s,box-shadow .22s;text-decoration:none;display:block;}
+.pcard:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 12px 36px rgba(0,0,0,.45);}
+/* 아이콘 썸네일 */
+.pcard-thumb{
+  height:110px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.pcard-thumb::before{
+  content:'';position:absolute;inset:0;
+  background:inherit;
+  filter:brightness(.55);
+}
+.pcard-icon-wrap{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.pcard-big-icon{font-size:38px;line-height:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));}
+.pcard-cat{
+  font-size:10px;font-weight:600;padding:2px 10px;border-radius:8px;
+  background:rgba(0,0,0,.45);color:rgba(255,255,255,.8);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(4px);
+}
+.pcard-body{padding:12px 14px;}
+.pcard-name{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.pcard-desc{font-size:12px;color:var(--text2);line-height:1.55;}
+.pcard-link{font-size:11px;color:var(--accent);margin-top:8px;display:flex;align-items:center;gap:3px;}
+
+/* ══════════════════════════════════════════════
+   MAP — 내장형 임베드
+══════════════════════════════════════════════ */
+.map-section-note{background:rgba(122,184,212,.07);border:1px solid rgba(122,184,212,.2);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--text2);margin-bottom:20px;}
+.map-section-note strong{color:var(--accent);}
+.map-embed-wrap{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;}
+.map-embed-wrap iframe{display:block;width:100%;height:500px;border:none;}
+/* 지도 범례 */
+.map-legend-bar{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:20px;padding:12px 16px;background:var(--surf);border:1px solid var(--border);border-radius:10px;}
+.map-leg{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text2);}
+.map-leg-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.3);}
+/* 탭 토글 */
+.map-tabs{display:flex;gap:8px;margin-bottom:18px;}
+.map-tab{padding:7px 18px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text2);font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer;transition:all .18s;}
+.map-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(122,184,212,.08);}
+.accom-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
+.acard{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:border-color .2s;cursor:pointer;}
+.acard:hover{border-color:var(--border2);}
+.acard-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:700;margin-bottom:8px;}
+.acard-region{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.acard-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.acard-type{font-size:12px;color:var(--text2);margin-bottom:8px;}
+.acard-price{font-size:13px;color:var(--gold);margin-bottom:10px;font-weight:500;}
+.acard-links{display:flex;gap:8px;flex-wrap:wrap;}
+.acard-link{font-size:12px;color:var(--accent);text-decoration:none;border:1px solid rgba(122,184,212,.25);padding:4px 12px;border-radius:7px;transition:all .18s;}
+.acard-link:hover{background:rgba(122,184,212,.08);border-color:rgba(122,184,212,.45);}
+.acard-note{font-size:11.5px;color:var(--muted);margin-top:8px;font-style:italic;}
+/* 여행지 그리드 (지도 탭) */
+.spot-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.scard{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:border-color .18s;display:flex;gap:10px;align-items:flex-start;}
+.scard:hover{border-color:var(--border2);}
+.scard-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.scard-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.scard-cat{font-size:11px;color:var(--muted);}
+
+/* ══════════════════════════════════════════════
+   COST
+══════════════════════════════════════════════ */
+.cost-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:26px;}
+.cbox{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:16px 18px;text-align:center;}
+.cbox.total{border-color:rgba(200,166,108,.3);background:linear-gradient(135deg,rgba(200,166,108,.06),var(--surf));}
+.cbox-label{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.cbox-amt{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--text);}
+.cbox-amt span{font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--text2);}
+.cbox.total .cbox-amt{color:var(--gold);}
+.cost-wrap{background:var(--surf);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.ctable{width:100%;border-collapse:collapse;}
+.ctable th{padding:11px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border2);}
+.ctable td{padding:12px 16px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:top;}
+.ctable tr:last-child td{border-bottom:none;}
+.ctable tr:hover td{background:rgba(255,255,255,.015);}
+.ctable td.amt{color:var(--accent);font-weight:500;white-space:nowrap;}
+.ctable td.note{font-size:12px;color:var(--muted);}
+.csec td{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:9px 16px;background:rgba(255,255,255,.025);}
+.ctable tfoot td{padding:15px 16px;font-size:14px;color:var(--gold);font-weight:600;border-top:1px solid var(--border2);}
+.cnotes{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-top:18px;}
+.cnotes h3{font-size:13px;font-weight:600;color:var(--warn);margin-bottom:12px;}
+.cnotes ul{list-style:none;}
+.cnotes li{font-size:13px;color:var(--text2);padding:4px 0;display:flex;gap:8px;}
+.cnotes li::before{content:'•';color:var(--warn);flex-shrink:0;}
+
+/* ══════════════════════════════════════════════
+   TIPS + LINKS
+══════════════════════════════════════════════ */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.tcard{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.tcard-icon{font-size:22px;margin-bottom:10px;}
+.tcard-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.tcard-body{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:12px;}
+.link-list{display:flex;flex-direction:column;gap:6px;}
+.tip-link{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--accent);text-decoration:none;padding:6px 10px;border-radius:7px;border:1px solid rgba(122,184,212,.18);transition:all .18s;}
+.tip-link:hover{background:rgba(122,184,212,.08);border-color:rgba(122,184,212,.35);}
+.tip-link-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+
+/* ══════════════════════════════════════════════
+   BACKUP SPOTS
+══════════════════════════════════════════════ */
+.backup-intro{background:rgba(212,110,110,.06);border:1px solid rgba(212,110,110,.2);border-radius:10px;padding:16px 20px;margin-bottom:22px;font-size:13px;color:var(--text2);}
+.backup-intro strong{color:var(--red);}
+.backup-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.bcard{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.bcard-trigger{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.bcard-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.bcard-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.bcard-spots{display:flex;flex-direction:column;gap:6px;}
+.bspot{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--text2);}
+.bspot-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.bspot strong{color:var(--accent);}
+.bspot-link{font-size:11px;color:var(--accent);text-decoration:none;}
+.bspot-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grad"></div>
+  <div class="hero-content">
+    <div class="hero-eye">✦ Iceland Honeymoon Planner 2026 ✦</div>
+    <h1>아이슬란드 <em>신혼여행</em></h1>
+    <div class="hero-sub">서울 → 암스테르담 스톱오버 → 레이캬비크 · 12일 · 3월 중순 – 4월 초 · 렌터카 자유여행</div>
+    <div class="hero-badges">
+      <span class="hb hb-b">✈ ICN → AMS → KEF</span>
+      <span class="hb hb-g">🌌 오로라 시즌 (확률 68%)</span>
+      <span class="hb hb-gold">🚗 4WD 렌터카 로드트립</span>
+      <span class="hb hb-b">💑 신혼 특별 일정</span>
+    </div>
+  </div>
+  <div class="hero-arrow"><div class="arrow-line"></div>SCROLL</div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav-wrap">
+  <div class="nav">
+    <button class="nb active" onclick="showSec('iti',this)">📅 타임테이블</button>
+    <button class="nb" onclick="showSec('aurora',this)">🌌 오로라 가이드</button>
+    <button class="nb" onclick="showSec('places',this)">📍 여행지 카드</button>
+    <button class="nb" onclick="showSec('accom',this)">🏨 숙소 & 지도</button>
+    <button class="nb" onclick="showSec('cost',this)">💰 예상 비용</button>
+    <button class="nb" onclick="showSec('tips',this)">💡 여행 팁</button>
+    <button class="nb" onclick="showSec('backup',this)">⛈ 악천후 대체지</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════════════
+     TIMETABLE
+════════════════════════════════════════════ -->
+<section id="iti" class="section active">
+  <div class="sh">
+    <h2>12일 타임테이블</h2>
+    <div class="div"></div>
+    <p>3월 16일(일) 출발 기준 · 현지 시간 기준 · 이동 거리·소요시간 포함 · 🌌 오로라 헌팅 추천일 표시</p>
+  </div>
+
+  <div class="tt-legend">
+    <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--gold)"></div>암스테르담</div>
+    <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--accent)"></div>레이캬비크·서부</div>
+    <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--green)"></div>남부해안·동부</div>
+    <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--purple)"></div>북부</div>
+    <div class="tt-leg-item"><div class="tt-leg-dot" style="background:var(--muted)"></div>항공</div>
+    <div class="tt-leg-item" style="margin-left:8px">🌌 = 오로라 헌팅 추천</div>
+  </div>
+
+  <div class="tt-scroll">
+    <table class="tt-table">
+      <thead class="tt-head">
+        <tr>
+          <th class="time-col">시간</th>
+          <th class="loc-col">위치</th>
+          <th class="act-col">일정 & 내용</th>
+          <th class="tag-col">태그 / 소요</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      <!-- DAY 1 -->
+      <tr class="tt-day-header fly"><td colspan="4">DAY 1 · 3월 16일 (일) — 서울 출발</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">14:00~</span><span class="time-arrow">↓ 약 12~14h</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-fly">✈ ICN</span></td>
+        <td class="act-cell">
+          <div class="act-title">인천국제공항 출발 → 암스테르담</div>
+          <div class="act-desc">KLM 직항(KL856) 또는 대한항공 추천. 오후 출발, 현지 다음날 오전 도착.</div>
+          <div class="act-note">출발 전 체크: 국제운전면허증 · 여행자보험 · 렌터카 예약 재확인</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">ICN → AMS</span><span class="tag tag-gold">비행 약 12~14h</span><span class="tag tag-b">KLM 직항 추천</span></div></td>
+      </tr>
+
+      <!-- DAY 2 -->
+      <tr class="tt-day-header ams"><td colspan="4">DAY 2 · 3월 17일 (월) — 암스테르담 스톱오버</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">08:30</span><span class="time-arrow">↓ 기차 20분</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-ams">🌷 AMS 공항</span></td>
+        <td class="act-cell">
+          <div class="act-title">암스테르담 스키폴 공항 도착 → 시내 이동</div>
+          <div class="act-desc">스키폴 → 암스테르담 센트럴 기차역 (Intercity, 약 20분, €5).</div>
+          <div class="act-note">입국심사 약 30분 여유. 수하물 픽업 후 기차 탑승.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">입국 & 이동</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">10:00~13:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-ams">🏛 시내</span></td>
+        <td class="act-cell">
+          <div class="act-title">라익스뮤지엄 + 운하 지구 워킹</div>
+          <div class="act-desc">렘브란트·베르메르 소장 국립미술관. 뮤지엄 광장에서 자전거 기념사진. 인근 운하 카페에서 커피 한 잔.</div>
+          <div class="act-note">입장권 온라인 사전 예약 권장 (현장 대기 길 수 있음)</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">라익스뮤지엄</span><span class="tag tag-gold">운하 지구</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">14:00~17:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-ams">⛵ 운하</span></td>
+        <td class="act-cell">
+          <div class="act-title">운하 크루즈 + 요르단 지구 산책</div>
+          <div class="act-desc">1시간 유람선 탑승. 요르단 지구(Jordaan) 골목 카페 & 앤티크숍 탐방.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">운하 크루즈 1h</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">19:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-ams">🍷 디너</span></td>
+        <td class="act-cell">
+          <div class="act-title">신혼 첫 유럽 디너 & 숙박</div>
+          <div class="act-desc">운하뷰 레스토랑 예약 필수. 추천: De Belhamel, Rijksmuseum 인근 카페 등. 시내 호텔/에어비앤비 숙박.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">신혼 디너 🍷</span><span class="tag tag-gold">1박</span></div></td>
+      </tr>
+
+      <!-- DAY 3 -->
+      <tr class="tt-day-header rkv"><td colspan="4">DAY 3 · 3월 18일 (화) — 레이캬비크 도착</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">08:00</span><span class="time-arrow">↓ 비행 3h15m</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-fly">✈ AMS</span></td>
+        <td class="act-cell">
+          <div class="act-title">암스테르담 → 케플라비크 (Icelandair)</div>
+          <div class="act-desc">AMS 출발 → KEF 현지 약 07:15 도착 (시차 -1h). Icelandair 직항 약 3시간 15분.</div>
+          <div class="act-note">아이슬란드는 UTC+0 (서머타임 시작 3월 말 이전까지 한국 -9h)</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">AMS → KEF</span><span class="tag tag-b">3h 15m</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">08:00~10:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🚗 KEF 공항</span></td>
+        <td class="act-cell">
+          <div class="act-title">렌터카 수령 + 레이캬비크 이동</div>
+          <div class="act-desc">공항 내 렌터카 카운터 (Blue Car, Geysir 등). 보험 서류 확인 후 수령. KEF → 레이캬비크 약 50km, 40분.</div>
+          <div class="act-note">4WD SUV · 완전면책(SCDW) + 모래화산재 보험 필수 확인</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-g">렌터카 수령</span><div class="km-bar"><span class="km-icon">🚗</span>KEF→REY 50km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">11:00~17:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🏙 레이캬비크</span></td>
+        <td class="act-cell">
+          <div class="act-title">레이캬비크 시내 탐방</div>
+          <div class="act-desc">할그림스키르캬 교회 전망대 (도시 파노라마, 입장 €10) → 선보야저 조각상 → 하르파 콘서트홀 외관 → 레이캬비크 시내 핫도그 스탠드 (현지 명물, 약 500kr).</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">할그림스키르캬</span><span class="tag tag-b">선보야저</span><span class="tag tag-b">시내 워킹</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">22:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🌌 교외</span></td>
+        <td class="act-cell">
+          <div class="act-title">첫 오로라 도전 (선택)</div>
+          <div class="act-desc">레이캬비크 교외 Grótta 등대 방향 (차로 15분). KP 지수 앱 확인 후 날씨 맑으면 도전.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag aurora-tag">🌌 오로라 첫 시도</span></div></td>
+      </tr>
+
+      <!-- DAY 4 -->
+      <tr class="tt-day-header rkv"><td colspan="4">DAY 4 · 3월 19일 (수) — 골든서클 (약 260km)</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">08:30 출발</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🔵 싱벨리어</span></td>
+        <td class="act-cell">
+          <div class="act-title">싱벨리어 국립공원 — 유네스코</div>
+          <div class="act-desc">레이캬비크 → 싱벨리어 약 50km, 40분. 유라시아-북미 판 경계 협곡 산책. 알싱기 의회 유적.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">유네스코</span><div class="km-bar"><span class="km-icon">🚗</span>REY→싱벨리어 50km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">11:00~13:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">💧 게이시르</span></td>
+        <td class="act-cell">
+          <div class="act-title">게이시르 지열지대 — 스트로쿠르 간헐천</div>
+          <div class="act-desc">싱벨리어 → 게이시르 약 60km, 1시간. 스트로쿠르 5~10분마다 30m 분출. 지열지대 산책.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">분출 5~10분 간격</span><div class="km-bar"><span class="km-icon">🚗</span>60km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">13:30~15:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🌊 굴포스</span></td>
+        <td class="act-cell">
+          <div class="act-title">굴포스 황금 폭포</div>
+          <div class="act-desc">게이시르 → 굴포스 약 10km, 15분. 2단 낙차 웅장한 협곡. 3월 = 얼음 테두리 + 물보라 황홀.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">황금 폭포</span><div class="km-bar"><span class="km-icon">🚗</span>10km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">15:30~16:30</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🕳 케리드</span></td>
+        <td class="act-cell">
+          <div class="act-title">케리드 화산 분화구</div>
+          <div class="act-desc">굴포스 → 케리드 약 75km, 1시간. 3,000년 된 분화구 + 에메랄드 호수. 입장료 800kr.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">분화구 호수</span><div class="km-bar"><span class="km-icon">🚗</span>75km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">22:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🌌 외곽</span></td>
+        <td class="act-cell">
+          <div class="act-title">오로라 헌팅 — 골든서클 인근</div>
+          <div class="act-desc">숙소 복귀 후 KP지수·구름 확인. 맑으면 근처 어두운 곳으로 이동해 오로라 헌팅.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag aurora-tag">🌌 오로라 추천</span></div></td>
+      </tr>
+
+      <!-- DAY 5 -->
+      <tr class="tt-day-header south"><td colspan="4">DAY 5 · 3월 20일 (목) — 남부해안 1 → 비크 숙박 (약 280km)</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">09:00 출발</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🌈 셀랴란드스포스</span></td>
+        <td class="act-cell">
+          <div class="act-title">셀랴란드스포스 폭포 — 폭포 뒤 통과</div>
+          <div class="act-desc">레이캬비크 → 셀랴란드스포스 약 130km, 2시간. 폭포 뒤 동굴 산책 가능 (미끄러움 주의, 아이젠 권장). 역광 사진 명소.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-g">폭포 뒤 통과</span><div class="km-bar"><span class="km-icon">🚗</span>REY→셀랴란드 130km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">12:00~13:30</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">⛰ 스코가포스</span></td>
+        <td class="act-cell">
+          <div class="act-title">스코가포스 폭포 + 전망대 하이킹</div>
+          <div class="act-desc">셀랴란드 → 스코가포스 약 30km, 25분. 너비 25m 거대 폭포. 무지개 명소. 좌측 계단 올라 전망대 15분 하이킹.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-g">무지개 명소</span><div class="km-bar"><span class="km-icon">🚗</span>30km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">14:30~16:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🖤 비크</span></td>
+        <td class="act-cell">
+          <div class="act-title">레이니스피야라 흑사장 + 비크 체크인</div>
+          <div class="act-desc">스코가포스 → 비크 약 33km, 30분. 레이니스피야라 검은 현무암 해변 + 주상절리. ⚠ 파도 강함, 파도선 절대 접근 금지.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-g">흑사장</span><span class="tag tag-r">⚠ 파도 위험</span><div class="km-bar"><span class="km-icon">🚗</span>33km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">22:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🌌 비크 외곽</span></td>
+        <td class="act-cell">
+          <div class="act-title">비크 외곽 오로라 헌팅</div>
+          <div class="act-desc">남부 최고 어둠 지대. 빛공해 거의 없음. 흑사장 + 오로라 조합은 세계 최고 사진 스팟 중 하나.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag aurora-tag">🌌 오로라 추천</span></div></td>
+      </tr>
+
+      <!-- DAY 6 -->
+      <tr class="tt-day-header south"><td colspan="4">DAY 6 · 3월 21일 (금) — 빙하하이킹 + 요쿨살론 → 호픈 숙박 (약 250km)</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">08:00~10:30</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🏔 스카프타펠</span></td>
+        <td class="act-cell">
+          <div class="act-title">스카프타펠 빙하 하이킹 투어 (2~3시간)</div>
+          <div class="act-desc">비크 → 스카프타펠 약 130km, 1h30m. 현지 가이드 동반 빙하 트레킹. 아이젠·헬멧 제공. 예약 필수: Glacier Guides, Arctic Adventures 등.</div>
+          <div class="act-note">투어 약 15,000~25,000kr/인. 전날 기상 확인 후 예약.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">빙하하이킹 2~3h</span><div class="km-bar"><span class="km-icon">🚗</span>비크→스카프타펠 130km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">13:00~15:30</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🧊 요쿨살론</span></td>
+        <td class="act-cell">
+          <div class="act-title">요쿨살론 빙하호수 + 다이아몬드 비치</div>
+          <div class="act-desc">스카프타펠 → 요쿨살론 약 65km, 50분. 유빙 둥둥 빙하호수 산책. 건너편 다이아몬드 비치 (검은 해변+크리스탈 빙하). 3월 = 얼음동굴 투어 가능!</div>
+          <div class="act-note">보트투어 약 10,000~15,000kr/인. 현지 티켓 부스에서 구매.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">요쿨살론</span><span class="tag tag-b">다이아몬드비치</span><div class="km-bar"><span class="km-icon">🚗</span>65km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">17:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🦞 호픈</span></td>
+        <td class="act-cell">
+          <div class="act-title">호픈(Höfn) 체크인 — 랍스터 디너</div>
+          <div class="act-desc">요쿨살론 → 호픈 약 80km, 1시간. 호픈은 랍스터(Hummar)의 도시. Hafnarbuðin 식당 추천. 랍스터 수프 필수.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">랍스터 디너 🦞</span><div class="km-bar"><span class="km-icon">🚗</span>80km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">22:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🌌 호픈 외곽</span></td>
+        <td class="act-cell">
+          <div class="act-title">★ 오로라 헌팅 — 요쿨살론 복귀 or 호픈 외곽</div>
+          <div class="act-desc">빙하호수 반영 오로라는 여행 중 가장 드라마틱한 장면. 차로 20분이면 요쿨살론 재방문 가능.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag aurora-tag">🌌 ★ 최고 오로라 스팟</span></div></td>
+      </tr>
+
+      <!-- DAY 7 -->
+      <tr class="tt-day-header south"><td colspan="4">DAY 7 · 3월 22일 (토) — 동부 피요르드 (약 200km)</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">09:00~11:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🏘 듀피보구르</span></td>
+        <td class="act-cell">
+          <div class="act-title">듀피보구르 어촌 + 달걀 조각품</div>
+          <div class="act-desc">호픈 → 듀피보구르 약 100km, 1h20m. 인구 350명 어촌. 해안가 달걀 조각품 사진 명소. 카페에서 현지식 조식.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-g">동부 어촌</span><div class="km-bar"><span class="km-icon">🚗</span>100km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">12:00~15:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">💧 헹기포스</span></td>
+        <td class="act-cell">
+          <div class="act-title">헹기포스 폭포 하이킹</div>
+          <div class="act-desc">에이일스타디르 인근. 편도 2km, 왕복 1h30m. 아이슬란드 2위 높이 폭포. 중간 리틀라네스 폭포도 함께.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-g">하이킹 왕복 1h30m</span><div class="km-bar"><span class="km-icon">🚗</span>+100km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">18:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-south">🏨 에이일스타디르</span></td>
+        <td class="act-cell">
+          <div class="act-title">에이일스타디르 체크인</div>
+          <div class="act-desc">동부 최대 도시(인구 약 2,000명). Lake Hotel Egilsstaðir 추천 (★4.4, 스파 보유).</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-g">1박</span></div></td>
+      </tr>
+
+      <!-- DAY 8 -->
+      <tr class="tt-day-header north"><td colspan="4">DAY 8 · 3월 23일 (일) — 화산지대 + 북부 입성 (약 280km)</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">09:00~10:30</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">🌋 데티포스</span></td>
+        <td class="act-cell">
+          <div class="act-title">데티포스 폭포 — 유럽 최강 수량</div>
+          <div class="act-desc">에이일스타디르 → 데티포스 약 120km, 1h30m. 폭 100m, 낙차 44m. 영화 프로메테우스 촬영지. 웅장함 압도.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-p">유럽 최강 수량</span><div class="km-bar"><span class="km-icon">🚗</span>120km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">12:00~14:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">♨ 나우마스카르드</span></td>
+        <td class="act-cell">
+          <div class="act-title">나우마스카르드 지열지대 + 딤무보기르</div>
+          <div class="act-desc">데티포스 → 나우마스카르드 약 60km. 유황 온천 지열지대 (화성 지형). 딤무보기르 용암 기둥 지대.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-p">지열지대</span><div class="km-bar"><span class="km-icon">🚗</span>60km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">15:00~17:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">♨ 미바튼</span></td>
+        <td class="act-cell">
+          <div class="act-title">미바튼 자연온천 (Mývatn Nature Baths)</div>
+          <div class="act-desc">블루라군 북부판. 유황 미네랄 온천. 3,600kr/인. 더 한적하고 자연스러운 온천.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-p">미바튼 온천 2h</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">18:30~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">🏙 아쿠레이리</span></td>
+        <td class="act-cell">
+          <div class="act-title">아쿠레이리 도착 + 체크인</div>
+          <div class="act-desc">미바튼 → 아쿠레이리 약 100km, 1시간. 아이슬란드 북부 최대 도시. Hotel Akureyri 또는 Berjaya 추천.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-p">아쿠레이리 1박차</span><div class="km-bar"><span class="km-icon">🚗</span>100km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">22:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">🌌 아쿠레이리</span></td>
+        <td class="act-cell">
+          <div class="act-title">★★ 북부 오로라 헌팅 1일차</div>
+          <div class="act-desc">아쿠레이리 주변 오로라 성공률 75%+. 호텔 오로라 웨이크업 콜 요청. 도시 외곽 15분 이내 어두운 곳으로 이동.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag aurora-tag">🌌 ★★ 성공률 75%+</span></div></td>
+      </tr>
+
+      <!-- DAY 9 -->
+      <tr class="tt-day-header north"><td colspan="4">DAY 9 · 3월 24일 (월) — 고래투어 + 고다포스</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">09:00~12:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">🐋 달빅</span></td>
+        <td class="act-cell">
+          <div class="act-title">달빅 고래관찰 투어 (3시간)</div>
+          <div class="act-desc">아쿠레이리 → 달빅 약 35km, 30분. 밍크고래·흰부리돌고래 관찰. Gentle Giants Whale Watching. 약 12,900kr/인. 사전 예약 필수.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-p">고래투어 3h</span><div class="km-bar"><span class="km-icon">🚗</span>35km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">14:00~15:30</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">💧 고다포스</span></td>
+        <td class="act-cell">
+          <div class="act-title">고다포스 — 신들의 폭포</div>
+          <div class="act-desc">달빅 → 고다포스 약 60km, 50분. 아이슬란드 기독교화 상징 폭포. 말굽 형태의 웅장한 구도.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-p">신들의 폭포</span><div class="km-bar"><span class="km-icon">🚗</span>60km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">22:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-north">🌌 아쿠레이리</span></td>
+        <td class="act-cell">
+          <div class="act-title">★★ 북부 오로라 헌팅 2일차</div>
+          <div class="act-desc">2연박이므로 두 번의 기회. 전날 못 봤다면 오늘이 절호의 찬스. 전날보다 더 멀리 이동해 볼 것.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag aurora-tag">🌌 ★★ 2연박 도전</span></div></td>
+      </tr>
+
+      <!-- DAY 10 -->
+      <tr class="tt-day-header rkv"><td colspan="4">DAY 10 · 3월 25일 (화) — 스나이펠스네스 반도 (약 350km)</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">07:30 출발</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🗻 스나이펠스</span></td>
+        <td class="act-cell">
+          <div class="act-title">아쿠레이리 → 스나이펠스네스 반도 (장거리)</div>
+          <div class="act-desc">약 350km, 4시간+. 반드시 일찍 출발. 경로 중 흐라운포스 폭포 (이끼 위 폭포) 잠깐 경유 추천.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">장거리 드라이브</span><div class="km-bar"><span class="km-icon">🚗</span>약 350km</div></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">13:00~16:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">📸 키르큐펠</span></td>
+        <td class="act-cell">
+          <div class="act-title">키르큐펠 산 + 키르큐펠스포스 폭포 — 인생샷</div>
+          <div class="act-desc">아이슬란드 가장 많이 촬영된 산. 폭포 3갈래 + 뒤 산 구도 = 완벽 프레임. 삼각대 필수.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">인생샷 명소</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">16:30~18:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🧊 스나이펠스</span></td>
+        <td class="act-cell">
+          <div class="act-title">스나이펠스요쿨 빙하 국립공원</div>
+          <div class="act-desc">쥘 베른 &lt;지구속여행&gt; 배경지. 빙하 뒤덮인 화산. 해안 절벽 드라이브.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">빙하 화산</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">19:00~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🏡 반도 숙박</span></td>
+        <td class="act-cell">
+          <div class="act-title">스나이펠스 농장 게스트하우스 체크인</div>
+          <div class="act-desc">신혼 추천: 통유리 오두막형 에어비앤비. 별·오로라 감상 가능. Snæfellsnes Farmhouse (★4.8)</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">신혼 추천 숙소 🌟</span></div></td>
+      </tr>
+
+      <!-- DAY 11 -->
+      <tr class="tt-day-header rkv"><td colspan="4">DAY 11 · 3월 26일 (수) — 블루라군 + 레이캬비크 마지막 날</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">10:00~13:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">♨ 블루라군</span></td>
+        <td class="act-cell">
+          <div class="act-title">블루라군 or 스카이라군 온천</div>
+          <div class="act-desc">블루라군 — 공항 인근, 세계 3대 온천. 밀키블루 실리카 온천. | 스카이라군 — 레이캬비크 시내 가깝, 절벽 뷰, 일몰 포인트. 신혼 커플에겐 스카이라군 강추.</div>
+          <div class="act-note">⚠ 반드시 지금 사전예약! 블루라군 Comfort 65€+, 스카이라군 49€+.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">온천 3h</span><span class="tag tag-r">사전예약 필수</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">15:00~18:00</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🛍 레이캬비크</span></td>
+        <td class="act-cell">
+          <div class="act-title">레이캬비크 쇼핑 + 기념품</div>
+          <div class="act-desc">로파퓌이야 울 스웨터 (정품 구분 필수), 아이슬란드 소금·용암 조각품·시규어로스 음악 앨범 등. Laugavegur 쇼핑 거리.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">기념품 쇼핑</span></div></td>
+      </tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">19:30~</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-rkv">🍾 디너</span></td>
+        <td class="act-cell">
+          <div class="act-title">신혼여행 마지막 스페셜 디너 🍾</div>
+          <div class="act-desc">Grillið (레이캬비크 최고급, 파노라마 뷰), Sægreifinn (현지인 픽, 랍스터 수프 명소), Dill Restaurant (노르딕 파인다이닝). 사전 예약 필수.</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-gold">신혼 파이널 디너 🍾</span><span class="tag tag-r">렌터카 반납</span></div></td>
+      </tr>
+
+      <!-- DAY 12 -->
+      <tr class="tt-day-header fly"><td colspan="4">DAY 12 · 3월 27일 (목) — 귀국</td></tr>
+      <tr class="tt-row">
+        <td class="time-cell"><span class="time-badge">06:00</span><span class="time-arrow">↓ 3h15m</span></td>
+        <td class="loc-cell"><span class="loc-chip lc-fly">✈ KEF</span></td>
+        <td class="act-cell">
+          <div class="act-title">케플라비크 출발 → 암스테르담 경유 → 인천</div>
+          <div class="act-desc">KEF → AMS (3h15m) → AMS에서 2~4시간 대기 → ICN (12h). 총 약 17~18시간. 다음날 오전 서울 도착.</div>
+          <div class="act-note">렌터카 공항 반납 출발 3시간 전 · 연료 가득 채워 반납</div>
+        </td>
+        <td class="tag-cell"><div class="tags"><span class="tag tag-b">KEF→AMS→ICN</span><span class="tag tag-gold">총 약 17~18h</span></div></td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     AURORA
+════════════════════════════════════════════ -->
+<section id="aurora" class="section">
+  <div class="sh"><h2>오로라 관측 가이드</h2><div class="div"></div><p>2026년 태양 극대기 직후 — 지난 10년 중 오로라 관측 최적의 해로 전망</p></div>
+  <div class="aurora-grid">
+    <div class="am"><div class="am-top"><div class="am-mo">9월</div><span class="ambadge fair">시작</span></div><div class="am-bar-bg"><div class="am-bar p" style="width:42%"></div></div><div class="am-pct">42% <span>확률</span></div><div class="am-note">시즌 시작. 밤 짧아 관측 시간 제한적.</div></div>
+    <div class="am good"><div class="am-top"><div class="am-mo">10월</div><span class="ambadge good">좋음</span></div><div class="am-bar-bg"><div class="am-bar g" style="width:62%"></div></div><div class="am-pct">62% <span>확률</span></div><div class="am-note">밤 길어짐. 구름 적고 맑음. 추분 효과.</div></div>
+    <div class="am peak"><div class="am-top"><div class="am-mo">11월</div><span class="ambadge best">최적</span></div><div class="am-bar-bg"><div class="am-bar gold" style="width:72%"></div></div><div class="am-pct">72% <span>확률</span></div><div class="am-note">태양활동 극대기+긴밤 겹침.</div></div>
+    <div class="am peak"><div class="am-top"><div class="am-mo">12월</div><span class="ambadge best">최고</span></div><div class="am-bar-bg"><div class="am-bar gold" style="width:78%"></div></div><div class="am-pct">78% <span>확률</span></div><div class="am-note">동지. 하루 21시간 어둠.</div></div>
+    <div class="am peak"><div class="am-top"><div class="am-mo">1월</div><span class="ambadge best">최고</span></div><div class="am-bar-bg"><div class="am-bar gold" style="width:76%"></div></div><div class="am-pct">76% <span>확률</span></div><div class="am-note">2026 태양 극대기+긴 밤.</div></div>
+    <div class="am peak"><div class="am-top"><div class="am-mo">2월</div><span class="ambadge best">최적</span></div><div class="am-bar-bg"><div class="am-bar gold" style="width:74%"></div></div><div class="am-pct">74% <span>확률</span></div><div class="am-note">붉은·보라색 오로라 빈번.</div></div>
+    <div class="am trip"><div class="am-top"><div class="am-mo" style="color:var(--gold)">3월 ★여행</div><span class="ambadge trip">추천</span></div><div class="am-bar-bg"><div class="am-bar gold" style="width:68%"></div></div><div class="am-pct">68% <span>확률</span></div><div class="am-note">춘분 지자기 활발. <strong style="color:var(--gold)">여행 시기!</strong></div></div>
+    <div class="am good"><div class="am-top"><div class="am-mo">4월 초 ★</div><span class="ambadge good">양호</span></div><div class="am-bar-bg"><div class="am-bar g" style="width:52%"></div></div><div class="am-pct">52% <span>확률</span></div><div class="am-note">밤 짧아지지만 맑은날 관측 가능.</div></div>
+  </div>
+  <div class="aurora-reco"><h3>🌌 이번 여행 오로라 추천 날짜</h3><div class="reco-grid">
+    <div class="reco-item"><div><span class="reco-day">Day 4</span> 골든서클 복귀 후</div><div class="reco-sub">싱벨리어 공원 인근 — 빛공해 없음</div></div>
+    <div class="reco-item"><div><span class="reco-day">Day 5</span> 비크 마을 외곽</div><div class="reco-sub">남부 최고 어둠 지대 · 흑사장+오로라</div></div>
+    <div class="reco-item"><div><span class="reco-day" style="color:var(--gold)">★ Day 6</span> 요쿨살론 빙하호수</div><div class="reco-sub">빙하 반영 오로라 — 최고 절경</div></div>
+    <div class="reco-item"><div><span class="reco-day" style="color:var(--gold)">★ Day 8~9</span> 아쿠레이리 북부</div><div class="reco-sub">성공률 75%+ · 2연박 연속 도전</div></div>
+  </div></div>
+  <div class="tips-box"><h3>🔍 오로라 헌팅 실전 팁</h3><div class="tg2">
+    <div class="tip2"><span class="tip2-icon">📱</span><span><strong>vedur.is</strong> + <strong>Aurora Forecast</strong> 앱 — KP지수·구름 동시 확인</span></div>
+    <div class="tip2"><span class="tip2-icon">🌙</span><span>최적 시간대: <strong>밤 10시~새벽 2시</strong> · 알람 필수</span></div>
+    <div class="tip2"><span class="tip2-icon">🚗</span><span>렌터카로 구름 피해 실시간 이동 — 자유여행 최대 장점</span></div>
+    <div class="tip2"><span class="tip2-icon">📷</span><span>ISO 800~3200, f/2.8 이하, 셔터 10~25초, 삼각대 필수</span></div>
+    <div class="tip2"><span class="tip2-icon">🌤</span><span>KP 2 이상 + 맑은 하늘 = 도전. 구름이 더 결정적 변수.</span></div>
+    <div class="tip2"><span class="tip2-icon">🧤</span><span>외부 1~2시간 대기 기본. 핫팩 다량 + 방수 방풍 완전무장</span></div>
+  </div></div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     PLACE CARDS
+════════════════════════════════════════════ -->
+<section id="places" class="section">
+  <div class="sh"><h2>여행지 포토카드</h2><div class="div"></div><p>카드 클릭 → 구글 검색 연결 · 지역별 필터 가능</p></div>
+  <div class="cat-filter">
+    <button class="cf active" onclick="filterCards('all',this)">전체</button>
+    <button class="cf" onclick="filterCards('암스테르담',this)">🌷 암스테르담</button>
+    <button class="cf" onclick="filterCards('레이캬비크',this)">🏙 레이캬비크</button>
+    <button class="cf" onclick="filterCards('골든서클',this)">🔵 골든서클</button>
+    <button class="cf" onclick="filterCards('남부해안',this)">🌊 남부해안</button>
+    <button class="cf" onclick="filterCards('북부',this)">🌋 북부</button>
+    <button class="cf" onclick="filterCards('온천',this)">♨ 온천</button>
+  </div>
+  <div class="cards-grid" id="cardsGrid"></div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     ACCOMMODATION + MAP
+════════════════════════════════════════════ -->
+<section id="accom" class="section">
+  <div class="sh"><h2>숙소 & 여행지 지도</h2><div class="div"></div><p>🏨 숙소 + 📍 여행지를 한 지도에서 확인 · 핀 클릭하면 상세 팝업</p></div>
+
+  <!-- 범례 -->
+  <div class="map-legend-bar">
+    <div class="map-leg"><div class="map-leg-dot" style="background:#c8a66c"></div>숙소 (번호 핀)</div>
+    <div class="map-leg"><div class="map-leg-dot" style="background:#7ab8d4"></div>레이캬비크·서부</div>
+    <div class="map-leg"><div class="map-leg-dot" style="background:#5bb89e"></div>남부해안·동부</div>
+    <div class="map-leg"><div class="map-leg-dot" style="background:#7d87c8"></div>북부</div>
+    <div class="map-leg"><div class="map-leg-dot" style="background:#e8a0a0"></div>온천</div>
+    <div class="map-leg"><div class="map-leg-dot" style="background:#f0c070"></div>주요 명소</div>
+  </div>
+
+  <!-- 지도 -->
+  <div class="map-embed-wrap">
+    <div id="leafmap" style="width:100%;height:520px;"></div>
+  </div>
+
+  <!-- 탭 -->
+  <div class="map-tabs">
+    <button class="map-tab active" onclick="switchMapTab('hotels',this)">🏨 숙소 목록</button>
+    <button class="map-tab" onclick="switchMapTab('spots',this)">📍 여행지 목록</button>
+  </div>
+
+  <div id="tab-hotels"><div class="accom-cards" id="accomCards"></div></div>
+  <div id="tab-spots" style="display:none"><div class="spot-cards" id="spotCards"></div></div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     COST
+════════════════════════════════════════════ -->
+<section id="cost" class="section">
+  <div class="sh"><h2>예상 비용 내역</h2><div class="div"></div><p>2인 기준 · 중상급 · 렌터카 자유여행</p></div>
+  <div class="cost-summary">
+    <div class="cbox"><div class="cbox-label">항공</div><div class="cbox-amt">280<span>만원</span></div></div>
+    <div class="cbox"><div class="cbox-label">숙박 (10박)</div><div class="cbox-amt">320<span>만원</span></div></div>
+    <div class="cbox"><div class="cbox-label">렌터카+주유</div><div class="cbox-amt">160<span>만원</span></div></div>
+    <div class="cbox"><div class="cbox-label">식비</div><div class="cbox-amt">130<span>만원</span></div></div>
+    <div class="cbox"><div class="cbox-label">투어·입장료</div><div class="cbox-amt">120<span>만원</span></div></div>
+    <div class="cbox total"><div class="cbox-label">2인 합계</div><div class="cbox-amt">1,010<span>만원~</span></div></div>
+  </div>
+  <div class="cost-wrap"><table class="ctable">
+    <thead><tr><th style="width:30%">항목</th><th style="width:22%">2인 예상</th><th>상세</th></tr></thead>
+    <tbody>
+      <tr class="csec"><td colspan="3">✈ 항공</td></tr>
+      <tr><td>서울 ↔ 암스테르담 (왕복)</td><td class="amt">200~260만원</td><td class="note">KLM 직항 기준. 3월 비수기.</td></tr>
+      <tr><td>암스테르담 ↔ 레이캬비크 (왕복)</td><td class="amt">20~50만원</td><td class="note">Icelandair. 조기 예약 시 저렴.</td></tr>
+      <tr class="csec"><td colspan="3">🏨 숙박 (10박)</td></tr>
+      <tr><td>암스테르담 1박</td><td class="amt">25~40만원</td><td class="note">시내 운하뷰 / 2인 1실</td></tr>
+      <tr><td>레이캬비크 2박</td><td class="amt">60~100만원</td><td class="note">주방 있는 에어비앤비 추천</td></tr>
+      <tr><td>비크 1박</td><td class="amt">30~45만원</td><td class="note">오로라 뷰 게스트하우스. 조기 예약 필수.</td></tr>
+      <tr><td>호픈 1박</td><td class="amt">35~55만원</td><td class="note">Hotel Höfn. 랍스터 인근.</td></tr>
+      <tr><td>에이일스타디르 1박</td><td class="amt">25~40만원</td><td class="note">Lake Hotel Egilsstaðir 추천</td></tr>
+      <tr><td>아쿠레이리 2박</td><td class="amt">60~100만원</td><td class="note">오로라 2연박. 호텔 오로라콜 서비스 요청.</td></tr>
+      <tr><td>스나이펠스네스 1박</td><td class="amt">30~50만원</td><td class="note">신혼 농장 오두막 에어비앤비</td></tr>
+      <tr><td>케플라비크 1박</td><td class="amt">20~35만원</td><td class="note">공항 9분. Hotel Keflavik.</td></tr>
+      <tr class="csec"><td colspan="3">🚗 렌터카·교통</td></tr>
+      <tr><td>렌터카 9일 (SUV 4WD)</td><td class="amt">90~130만원</td><td class="note">3월 빙판 대비 4WD 필수. 완전면책+화산재보험.</td></tr>
+      <tr><td>주유비</td><td class="amt">20~35만원</td><td class="note">리터당 약 3,000원. 총 약 2,200km 예상.</td></tr>
+      <tr><td>공항 교통 (AMS·KEF)</td><td class="amt">5~10만원</td><td class="note">기차·버스</td></tr>
+      <tr class="csec"><td colspan="3">🍽 식비 (2인)</td></tr>
+      <tr><td>레스토랑 외식</td><td class="amt">70~100만원</td><td class="note">1인 1회 약 3~5만원. 신혼 스페셜 디너 포함.</td></tr>
+      <tr><td>마트·카페</td><td class="amt">35~60만원</td><td class="note">Bónus 마트 적극 활용시 30~40% 절감</td></tr>
+      <tr class="csec"><td colspan="3">🎫 투어·액티비티</td></tr>
+      <tr><td>블루/스카이라군 (2인)</td><td class="amt">20~35만원</td><td class="note">사전예약 필수. 블루라군 Comfort 65€+.</td></tr>
+      <tr><td>빙하하이킹 (2인)</td><td class="amt">15~25만원</td><td class="note">스카프타펠 기준, 2~3시간</td></tr>
+      <tr><td>고래관찰 (2인)</td><td class="amt">15~22만원</td><td class="note">달빅 Gentle Giants</td></tr>
+      <tr><td>오로라 투어 (선택, 1회)</td><td class="amt">10~20만원</td><td class="note">렌터카 있어도 보험용 1회 추천</td></tr>
+      <tr><td>요쿨살론 보트투어 (2인)</td><td class="amt">10~18만원</td><td class="note">3월 얼음동굴 투어 가능</td></tr>
+      <tr><td>입장료 합산</td><td class="amt">10~15만원</td><td class="note">싱벨리어, 케리드, 전망대 등</td></tr>
+      <tr class="csec"><td colspan="3">💼 기타</td></tr>
+      <tr><td>여행자보험 (2인)</td><td class="amt">5~10만원</td><td class="note">렌터카 손상 포함 여부 확인</td></tr>
+      <tr><td>쇼핑·기념품</td><td class="amt">20~50만원</td><td class="note">로파퓌이야 스웨터, 용암 소금 등</td></tr>
+      <tr><td>예비비</td><td class="amt">30만원</td><td class="note">날씨 변수, 추가 숙박 등</td></tr>
+    </tbody>
+    <tfoot><tr><td>💍 2인 합계 예상</td><td class="amt" style="font-size:15px">약 900 ~ 1,150만원</td><td class="note">절약형 750만원 / 럭셔리 1,300만원+</td></tr></tfoot>
+  </table></div>
+  <div class="cnotes"><h3>⚠ 절약 팁 & 주의사항</h3><ul>
+    <li>렌터카 <strong>완전면책(SCDW) + 화산재·모래 보험</strong> 필수. 강풍·자갈 손상 잦음.</li>
+    <li>3월 <strong>4WD 필수</strong>. 오토매틱 조기 마감 → 최소 3개월 전 예약.</li>
+    <li><strong>블루라군 지금 예약!</strong> 현장 구매 거의 불가.</li>
+    <li><strong>Bónus 마트</strong> 활용. 조식 주방 이용 시 식비 30~40% 절감.</li>
+    <li>반탱크 이하면 보이는 즉시 주유. 간격이 100km+ 되는 구간 있음.</li>
+  </ul></div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     TIPS + LINKS
+════════════════════════════════════════════ -->
+<section id="tips" class="section">
+  <div class="sh"><h2>신혼여행 필수 팁 & 유용한 사이트</h2><div class="div"></div><p>렌터카 자유여행 × 3월 아이슬란드 핵심 정보 · 링크 클릭으로 바로 이동</p></div>
+  <div class="tgrid">
+
+    <div class="tcard">
+      <div class="tcard-icon">🌤</div>
+      <div class="tcard-title">날씨 & 도로 상황</div>
+      <div class="tcard-body">매일 아침 반드시 확인. 아이슬란드 날씨는 하루에도 4계절.</div>
+      <div class="link-list">
+        <a class="tip-link" href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank"><div class="tip-link-dot"></div>vedur.is — 오로라 예보 (공식)</a>
+        <a class="tip-link" href="https://www.road.is/travel-info/road-condition-and-weather/road-conditions/" target="_blank"><div class="tip-link-dot"></div>road.is — 도로 통제 실시간</a>
+        <a class="tip-link" href="https://safetravel.is" target="_blank"><div class="tip-link-dot"></div>safetravel.is — 안전 정보</a>
+        <a class="tip-link" href="https://en.vedur.is" target="_blank"><div class="tip-link-dot"></div>vedur.is — 날씨 예보 (영문)</a>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tcard-icon">🌌</div>
+      <div class="tcard-title">오로라 추적 앱·사이트</div>
+      <div class="tcard-body">KP 지수 + 구름 동시 확인이 핵심. KP 2 이상 + 맑은 하늘 = 출발.</div>
+      <div class="link-list">
+        <a class="tip-link" href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank"><div class="tip-link-dot"></div>아이슬란드 오로라 공식 예보</a>
+        <a class="tip-link" href="https://www.spaceweather.com" target="_blank"><div class="tip-link-dot"></div>spaceweather.com — 태양활동</a>
+        <a class="tip-link" href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank"><div class="tip-link-dot"></div>NOAA 오로라 30분 예보</a>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tcard-icon">🚗</div>
+      <div class="tcard-title">렌터카 예약</div>
+      <div class="tcard-body">4WD 오토매틱 → 최소 3개월 전. 완전면책+모래화산재보험 필수 체크.</div>
+      <div class="link-list">
+        <a class="tip-link" href="https://guidetoiceland.is/ko/book-trips-holiday/self-drive-tour-packages" target="_blank"><div class="tip-link-dot"></div>Guide to Iceland 렌터카</a>
+        <a class="tip-link" href="https://www.bluecarrental.is" target="_blank"><div class="tip-link-dot"></div>Blue Car Rental (공항 인근)</a>
+        <a class="tip-link" href="https://www.rentalcars.com" target="_blank"><div class="tip-link-dot"></div>Rentalcars.com — 가격 비교</a>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tcard-icon">♨</div>
+      <div class="tcard-title">온천 예약 (지금 바로!)</div>
+      <div class="tcard-body">블루라군은 현장 구매 사실상 불가. 지금 예약 강력 권고.</div>
+      <div class="link-list">
+        <a class="tip-link" href="https://www.bluelagoon.com" target="_blank"><div class="tip-link-dot"></div>블루라군 공식 예약</a>
+        <a class="tip-link" href="https://skylagoon.com" target="_blank"><div class="tip-link-dot"></div>스카이라군 공식 예약 (신혼 추천)</a>
+        <a class="tip-link" href="https://www.myvatnnaturebaths.is" target="_blank"><div class="tip-link-dot"></div>미바튼 온천 (북부)</a>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tcard-icon">🎫</div>
+      <div class="tcard-title">투어 & 액티비티 예약</div>
+      <div class="tcard-body">빙하하이킹·고래투어는 인기 날짜 조기 마감. 2~3개월 전 예약.</div>
+      <div class="link-list">
+        <a class="tip-link" href="https://guidetoiceland.is/ko" target="_blank"><div class="tip-link-dot"></div>Guide to Iceland (종합)</a>
+        <a class="tip-link" href="https://www.glacierguides.is" target="_blank"><div class="tip-link-dot"></div>Glacier Guides — 빙하하이킹</a>
+        <a class="tip-link" href="https://gentlegiants.is" target="_blank"><div class="tip-link-dot"></div>Gentle Giants — 고래관찰 (달빅)</a>
+        <a class="tip-link" href="https://www.viator.com/Iceland/d4207-ttd" target="_blank"><div class="tip-link-dot"></div>Viator — 투어 가격 비교</a>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tcard-icon">✈</div>
+      <div class="tcard-title">항공권 & 숙소</div>
+      <div class="tcard-body">항공권 2~3개월 전 최저가. 에어비앤비는 주방 있는 곳 우선 선택.</div>
+      <div class="link-list">
+        <a class="tip-link" href="https://www.icelandair.com/ko-kr/" target="_blank"><div class="tip-link-dot"></div>Icelandair (AMS↔KEF 직항)</a>
+        <a class="tip-link" href="https://www.klm.com/ko-kr" target="_blank"><div class="tip-link-dot"></div>KLM (ICN↔AMS 직항)</a>
+        <a class="tip-link" href="https://www.airbnb.co.kr/s/Iceland/homes" target="_blank"><div class="tip-link-dot"></div>에어비앤비 아이슬란드</a>
+        <a class="tip-link" href="https://www.skyscanner.co.kr" target="_blank"><div class="tip-link-dot"></div>스카이스캐너 — 항공권 비교</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     BACKUP SPOTS — 악천후 대체지
+════════════════════════════════════════════ -->
+<section id="backup" class="section">
+  <div class="sh"><h2>⛈ 악천후 대체 여행지</h2><div class="div"></div><p>아이슬란드 날씨는 예측 불가. 폭설·강풍·도로 통제 시 대체 플랜 필수</p></div>
+
+  <div class="backup-intro">
+    <strong>⚠ 아이슬란드 3월 날씨 현실:</strong> 하루에도 맑음→폭설→강풍이 반복됩니다. road.is 도로 통제 확인 필수. 대체지는 <strong>실내 or 날씨 영향 적은 곳</strong>으로 구성했습니다.
+  </div>
+
+  <div class="backup-grid">
+
+    <div class="bcard">
+      <div class="bcard-trigger">⛈ 폭설 / 강풍으로 이동 불가 시</div>
+      <div class="bcard-title">레이캬비크 실내 대체지</div>
+      <div class="bcard-desc">이동 자체가 위험할 때. 레이캬비크 시내 실내 명소로 전환.</div>
+      <div class="bcard-spots">
+        <div class="bspot"><span class="bspot-icon">🏛</span><div><strong>하르파 콘서트홀</strong> — 유리 파사드 건축물. 공연 & 내부 투어 가능. <a class="bspot-link" href="https://www.google.com/search?q=하르파+콘서트홀+레이캬비크" target="_blank">검색 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">🦈</span><div><strong>비킹 해양 박물관</strong> — 아이슬란드 어업 역사. 갑판 투어 포함. <a class="bspot-link" href="https://www.google.com/search?q=레이캬비크+바이킹+해양박물관" target="_blank">검색 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">🧊</span><div><strong>페를란 박물관</strong> — 아이슬란드 자연 전시 + 실내 얼음동굴 체험. <a class="bspot-link" href="https://www.google.com/search?q=페를란+박물관+레이캬비크" target="_blank">검색 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">☕</span><div><strong>로컬 카페 호핑</strong> — Reykjavik Roasters, Te & Kaffi. 아이슬란드 수제 커피 문화 체험.</div></div>
+      </div>
+    </div>
+
+    <div class="bcard">
+      <div class="bcard-trigger">🌧 비·흐림으로 야외 사진 어려울 때</div>
+      <div class="bcard-title">날씨 영향 적은 실내/동굴 명소</div>
+      <div class="bcard-desc">야외 사진 명소 대신 독특한 지하·실내 체험으로 전환.</div>
+      <div class="bcard-spots">
+        <div class="bspot"><span class="bspot-icon">🌋</span><div><strong>스리흐누카기귀르 화산 내부 투어</strong> — 마그마 챔버 속으로 엘리베이터 하강. 10월까지 운영. <a class="bspot-link" href="https://www.google.com/search?q=스리흐누카기귀르+화산+투어" target="_blank">검색 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">🧊</span><div><strong>얼음동굴 투어</strong> (11~3월) — 바트나요쿨 빙하 내 크리스탈 블루 얼음동굴. 날씨와 무관. <a class="bspot-link" href="https://www.google.com/search?q=아이슬란드+얼음동굴+투어" target="_blank">검색 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">🏊</span><div><strong>현지 수영장 (Laugardalslaug)</strong> — 아이슬란드인 일상 온천. 야외지만 폭설에도 운영. 입장료 1,000kr.</div></div>
+      </div>
+    </div>
+
+    <div class="bcard">
+      <div class="bcard-trigger">🚫 북부 도로 통제 시 (Day 8~9)</div>
+      <div class="bcard-title">남부 대체 루트</div>
+      <div class="bcard-desc">북부 진입 불가 시 남부·골든서클 재방문 또는 서부 스나이펠스로 순서 변경.</div>
+      <div class="bcard-spots">
+        <div class="bspot"><span class="bspot-icon">🗻</span><div><strong>스나이펠스네스 반도 먼저</strong> — 북부 대신 서부 반도 일정 앞당기기. 날씨 비교적 온화. <a class="bspot-link" href="https://www.google.com/search?q=스나이펠스네스반도+아이슬란드" target="_blank">검색 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">🌊</span><div><strong>웨스트피요르드 당일</strong> — 레이캬비크에서 북서쪽. 한적하고 웅장한 피요르드. 덜 알려진 숨은 명소.</div></div>
+        <div class="bspot"><span class="bspot-icon">🔵</span><div><strong>골든서클 재방문</strong> — 흐린 날도 지열지대는 볼거리 충분. 게이시르는 날씨 무관.</div></div>
+      </div>
+    </div>
+
+    <div class="bcard">
+      <div class="bcard-trigger">🌫 짙은 안개 / 오로라 관측 불가 시</div>
+      <div class="bcard-title">오로라 대체 야간 스팟</div>
+      <div class="bcard-desc">오로라를 못 봐도 아이슬란드 야경 자체가 아름다움.</div>
+      <div class="bcard-spots">
+        <div class="bspot"><span class="bspot-icon">🌅</span><div><strong>일출 드라이브</strong> — 3월 일출 약 07:00. 골든아워 폭포·빙하 사진은 오로라 대신 최고의 대안.</div></div>
+        <div class="bspot"><span class="bspot-icon">🏊</span><div><strong>미바튼 자연온천 야간</strong> — 구름 있어도 온천은 가능. 스팀 속 온천은 다른 매력.</div></div>
+        <div class="bspot"><span class="bspot-icon">🍷</span><div><strong>레이캬비크 야경 + 루프탑 바</strong> — Sky Bar at Centerhotel Arnarhvoll. 시내 야경 감상.</div></div>
+        <div class="bspot"><span class="bspot-icon">⭐</span><div><strong>별 관측</strong> — KP 낮아도 구름 없으면 은하수 가능. 3월 아이슬란드 은하수 선명.</div></div>
+      </div>
+    </div>
+
+    <div class="bcard">
+      <div class="bcard-trigger">🤧 몸이 피곤하거나 쉬고 싶을 때</div>
+      <div class="bcard-title">신혼 휴식 스팟</div>
+      <div class="bcard-desc">10일 이상 이동 중심 일정 — 중간 하루 쉬는 날 만들기 추천.</div>
+      <div class="bcard-spots">
+        <div class="bspot"><span class="bspot-icon">♨</span><div><strong>스카이라군 반나절</strong> — 일몰 시간대 예약. 온천+식사+와인. 완전 힐링. <a class="bspot-link" href="https://skylagoon.com" target="_blank">예약 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">🛒</span><div><strong>레이캬비크 마켓 & 카페</strong> — Kolaportið 벼룩시장 (주말). 현지 수공예품 쇼핑.</div></div>
+        <div class="bspot"><span class="bspot-icon">🎵</span><div><strong>하르파 공연 관람</strong> — 아이슬란드 심포니 오케스트라, 지역 뮤지션 공연. 신혼에 낭만적. <a class="bspot-link" href="https://en.harpa.is" target="_blank">예약 →</a></div></div>
+      </div>
+    </div>
+
+    <div class="bcard">
+      <div class="bcard-trigger">❄ 빙하하이킹 날씨 취소 시</div>
+      <div class="bcard-title">빙하 대체 액티비티</div>
+      <div class="bcard-desc">빙하하이킹 취소 시 같은 지역 대체 체험 가능.</div>
+      <div class="bcard-spots">
+        <div class="bspot"><span class="bspot-icon">🧊</span><div><strong>얼음동굴 투어 (11~3월)</strong> — 빙하하이킹 대신 얼음동굴 탐험. 완전 실내 진행. <a class="bspot-link" href="https://www.google.com/search?q=바트나요쿨+얼음동굴+투어" target="_blank">검색 →</a></div></div>
+        <div class="bspot"><span class="bspot-icon">🌊</span><div><strong>요쿨살론 수륙양용 보트</strong> — 빙하 트레킹 대신 보트로 빙하 접근. 날씨 영향 적음.</div></div>
+        <div class="bspot"><span class="bspot-icon">🐾</span><div><strong>개썰매 투어</strong> — 3월 가능. 눈길 위 허스키 썰매. 독특한 신혼 체험. <a class="bspot-link" href="https://www.google.com/search?q=아이슬란드+개썰매+투어" target="_blank">검색 →</a></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ══ SCRIPTS ══ -->
+<script>
+/* ── Nav ── */
+function showSec(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'accom' && !window._leafReady) initLeaf();
+}
+
+/* ── Map tab toggle ── */
+function switchMapTab(tab, btn) {
+  document.querySelectorAll('.map-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-hotels').style.display = tab === 'hotels' ? '' : 'none';
+  document.getElementById('tab-spots').style.display  = tab === 'spots'  ? '' : 'none';
+}
+
+/* ══ PLACE CARDS ══ */
+const places = [
+  {cat:'암스테르담',emoji:'⛵',col:'#c8a66c',name:'암스테르담 운하',desc:'세계문화유산 운하. 보트 크루즈 1시간. 요르단 지구 낭만 골목.',q:'암스테르담 운하 크루즈'},
+  {cat:'암스테르담',emoji:'🏛',col:'#c8a66c',name:'라익스뮤지엄',desc:'렘브란트·베르메르 걸작 소장 국립 미술관. 운하뷰 광장.',q:'암스테르담 라익스뮤지엄'},
+  {cat:'레이캬비크',emoji:'⛪',col:'#7ab8d4',name:'할그림스키르캬',desc:'레이캬비크 랜드마크. 전망대 파노라마. 바이킹 동상.',q:'할그림스키르캬 교회 전망대'},
+  {cat:'레이캬비크',emoji:'🚢',col:'#7ab8d4',name:'선보야저 조각상',desc:'바이킹 배 형상. 해안 일몰 최고 포인트.',q:'레이캬비크 선보야저'},
+  {cat:'골든서클',emoji:'🌀',col:'#5bb89e',name:'싱벨리어 국립공원',desc:'유네스코. 유라시아·북미 판 경계 협곡. 알싱기 의회 유적.',q:'싱벨리어 국립공원 아이슬란드'},
+  {cat:'골든서클',emoji:'💧',col:'#5bb89e',name:'게이시르 간헐천',desc:'스트로쿠르 5~10분 30m 분출. 지열 지대 산책.',q:'게이시르 간헐천 아이슬란드'},
+  {cat:'골든서클',emoji:'🌊',col:'#5bb89e',name:'굴포스 황금 폭포',desc:'2단 낙차 웅장 협곡. 3월 얼음+물보라 황홀.',q:'굴포스 폭포 아이슬란드'},
+  {cat:'골든서클',emoji:'🕳',col:'#5bb89e',name:'케리드 화산 분화구',desc:'3,000년 된 분화구. 에메랄드빛 호수+붉은 화산토.',q:'케리드 분화구 아이슬란드'},
+  {cat:'남부해안',emoji:'🌈',col:'#7ab8d4',name:'셀랴란드스포스',desc:'폭포 뒤 동굴 통과 가능. 역광 낭만 포인트.',q:'셀랴란드스포스 폭포'},
+  {cat:'남부해안',emoji:'⛰',col:'#7ab8d4',name:'스코가포스',desc:'너비 25m 거대 폭포. 무지개 명소. 전망대 하이킹.',q:'스코가포스 폭포 아이슬란드'},
+  {cat:'남부해안',emoji:'🖤',col:'#6a7a8a',name:'레이니스피야라 흑사장',desc:'세계 10대 해변. 검은 현무암 주상절리. 파도 강함 주의.',q:'레이니스피야라 검은 모래 해변'},
+  {cat:'남부해안',emoji:'🧊',col:'#7ab8d4',name:'요쿨살론 빙하호수',desc:'유빙 유람. 빙하 반영 오로라 절경. 3월 얼음동굴 가능.',q:'요쿨살론 빙하호수'},
+  {cat:'남부해안',emoji:'💎',col:'#7ab8d4',name:'다이아몬드 비치',desc:'검은 모래+크리스탈 빙하 조각. 해가 비치면 반짝.',q:'다이아몬드 비치 아이슬란드'},
+  {cat:'남부해안',emoji:'🏔',col:'#5bb89e',name:'스카프타펠 빙하하이킹',desc:'가이드 동반 빙하 트레킹. 아이젠·헬멧 제공.',q:'스카프타펠 빙하하이킹'},
+  {cat:'남부해안',emoji:'🗻',col:'#5bb89e',name:'키르큐펠 산',desc:'아이슬란드 대표 인생샷. 폭포+산 완벽 구도.',q:'키르큐펠 산 아이슬란드'},
+  {cat:'북부',emoji:'🌋',col:'#7d87c8',name:'데티포스 폭포',desc:'유럽 최강 수량. 프로메테우스 촬영지. 웅장함 압도.',q:'데티포스 폭포 아이슬란드'},
+  {cat:'북부',emoji:'♨',col:'#7d87c8',name:'나우마스카르드',desc:'유황 지열 지형. 화성 같은 경관. 미바튼 인근.',q:'나우마스카르드 지열지대'},
+  {cat:'북부',emoji:'🐋',col:'#7d87c8',name:'달빅 고래관찰',desc:'밍크고래·흰부리돌고래. Gentle Giants 투어.',q:'달빅 고래관찰 투어 아이슬란드'},
+  {cat:'북부',emoji:'💧',col:'#7d87c8',name:'고다포스 폭포',desc:'신들의 폭포. 아이슬란드 기독교화 상징. 말굽형.',q:'고다포스 폭포 아이슬란드'},
+  {cat:'북부',emoji:'🌌',col:'#5a5080',name:'아쿠레이리 오로라',desc:'성공률 75%+. 2박 연속 도전 최적.',q:'아쿠레이리 오로라 관측'},
+  {cat:'온천',emoji:'🌊',col:'#4a8fa8',name:'블루라군',desc:'세계 3대 온천. 밀키블루 실리카. 공항 인근.',q:'아이슬란드 블루라군 온천'},
+  {cat:'온천',emoji:'🌅',col:'#4a8fa8',name:'스카이라군',desc:'레이캬비크 인근. 절벽 뷰. 신혼 강추.',q:'아이슬란드 스카이라군 온천'},
+  {cat:'온천',emoji:'♨',col:'#8a6030',name:'미바튼 자연온천',desc:'북부판 블루라군. 더 한적하고 자연스러움.',q:'미바튼 자연온천 아이슬란드'},
+];
+
+/* 카테고리별 배경 그라데이션 */
+const catGrad = {
+  '암스테르담':'linear-gradient(145deg,#1e1a30,#2a2040)',
+  '레이캬비크':'linear-gradient(145deg,#0e1c2e,#182840)',
+  '골든서클':  'linear-gradient(145deg,#0e1e18,#162a20)',
+  '남부해안':  'linear-gradient(145deg,#0a1820,#102838)',
+  '북부':      'linear-gradient(145deg,#14102a,#1c1838)',
+  '온천':      'linear-gradient(145deg,#081820,#0e2030)',
+};
+
+function renderCards(f) {
+  const g = document.getElementById('cardsGrid');
+  const list = f === 'all' ? places : places.filter(p => p.cat === f);
+  g.innerHTML = list.map(p => `
+    <a class="pcard" href="https://www.google.com/search?q=${encodeURIComponent(p.q)}" target="_blank">
+      <div class="pcard-thumb" style="background:${catGrad[p.cat]||'linear-gradient(145deg,#141921,#1b2230)'}">
+        <div class="pcard-icon-wrap">
+          <div class="pcard-big-icon">${p.emoji}</div>
+          <span class="pcard-cat">${p.cat}</span>
+        </div>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">${p.name}</div>
+        <div class="pcard-desc">${p.desc}</div>
+        <div class="pcard-link">🔍 구글 검색 →</div>
+      </div>
+    </a>`).join('');
+}
+function filterCards(c, btn) {
+  document.querySelectorAll('.cf').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(c);
+}
+renderCards('all');
+
+/* ══ ACCOMMODATION + 여행지 데이터 ══ */
+const hotels = [
+  {n:'H1',region:'Day 2 · 암스테르담',name:'암스테르담 시내',type:'운하뷰 부티크 / 에어비앤비',price:'25~40만원',note:'요르단 지구, 담 광장 인근',lat:52.3728,lng:4.8936,color:'#c8a66c',
+   airbnb:'https://www.airbnb.co.kr/s/Amsterdam--Netherlands/homes',gmap:'https://www.google.com/maps/search/amsterdam+boutique+hotel/@52.3728,4.8936,14z'},
+  {n:'H2',region:'Day 3~4 · 레이캬비크',name:'레이캬비크 시내',type:'주방 있는 아파트형 에어비앤비',price:'30~50만원/박',note:'할그림스키르캬 인근. 주방 필수.',lat:64.1471,lng:-21.9408,color:'#7ab8d4',
+   airbnb:'https://www.airbnb.co.kr/s/Reykjavik--Iceland/homes',gmap:'https://www.google.com/maps/search/reykjavik+apartment/@64.1471,-21.9408,14z'},
+  {n:'H3',region:'Day 5 · 비크',name:'The Barn / Vík Cottages',type:'오로라 게스트하우스 ★4.5',price:'30~45만원',note:'빛공해 없음. 3개월 전 예약 필수.',lat:63.419,lng:-19.000,color:'#5bb89e',
+   airbnb:'https://www.airbnb.co.kr/s/Vik--Iceland/homes',gmap:'https://www.google.com/maps/place/V%C3%ADk+%C3%AD+M%C3%BDrdal/@63.419,-19.000,13z'},
+  {n:'H4',region:'Day 6 · 호픈',name:'Hótel Höfn',type:'호텔 ★4.0 / 리뷰 801건',price:'35~55만원',note:'랍스터 맛집 인근. 빙하 접근 최적.',lat:64.2575,lng:-15.2126,color:'#5bb89e',
+   airbnb:'https://www.airbnb.co.kr/s/H%C3%B6fn--Iceland/homes',gmap:'https://www.google.com/maps/place/H%C3%B3tel+H%C3%B6fn/@64.2575,-15.2126,15z'},
+  {n:'H5',region:'Day 7 · 에이일스타디르',name:'Lake Hótel Egilsstaðir',type:'호텔+스파 ★4.4 / 리뷰 793건',price:'25~40만원',note:'동부 유일 도시급. 스파 보유.',lat:65.2622,lng:-14.4150,color:'#7d87c8',
+   airbnb:'https://www.airbnb.co.kr/s/Egilsstadir--Iceland/homes',gmap:'https://www.google.com/maps/place/Lake+H%C3%B3tel+Egilssta%C3%B0ir/@65.2622,-14.4150,15z'},
+  {n:'H6',region:'Day 8~9 · 아쿠레이리',name:'Hotel Akureyri / Berjaya',type:'호텔 ★4.2~4.3 · 오로라콜 서비스',price:'30~50만원/박',note:'성공률 75%+. 오로라 웨이크업 콜 요청.',lat:65.6782,lng:-18.0898,color:'#7d87c8',
+   airbnb:'https://www.airbnb.co.kr/s/Akureyri--Iceland/homes',gmap:'https://www.google.com/maps/place/Hotel+Akureyri/@65.6782,-18.0898,14z'},
+  {n:'H7',region:'Day 10 · 스나이펠스네스',name:'Snæfellsnes Farmhouse',type:'농장 게스트하우스 ★4.8',price:'30~50만원',note:'신혼 강추. 통유리 뷰. 오로라 가능.',lat:64.9474,lng:-23.1675,color:'#c8a66c',
+   airbnb:'https://www.airbnb.co.kr/s/Sn%C3%A6fellsnes/homes',gmap:'https://www.google.com/maps/place/Sn%C3%A6fellsnes/@64.9474,-23.1675,13z'},
+  {n:'H8',region:'Day 11 · 케플라비크',name:'Hotel Keflavik',type:'호텔 ★4.1 · 공항 9분',price:'20~35만원',note:'귀국 전날. 블루라군 인근.',lat:64.0005,lng:-22.5471,color:'#7ab8d4',
+   airbnb:'https://www.airbnb.co.kr/s/Keflavik--Iceland/homes',gmap:'https://www.google.com/maps/place/Hotel+Keflavik/@64.0005,-22.5471,14z'},
+];
+
+/* 여행지 핀 데이터 */
+const spotPins = [
+  {emoji:'🌀',name:'싱벨리어',cat:'골든서클',col:'#5bb89e',lat:64.2558,lng:-21.1300,q:'싱벨리어 국립공원'},
+  {emoji:'💧',name:'게이시르',cat:'골든서클',col:'#5bb89e',lat:64.3136,lng:-20.3021,q:'게이시르 간헐천'},
+  {emoji:'🌊',name:'굴포스',cat:'골든서클',col:'#5bb89e',lat:64.3271,lng:-20.1206,q:'굴포스 폭포'},
+  {emoji:'🌈',name:'셀랴란드스포스',cat:'남부해안',col:'#7ab8d4',lat:63.6156,lng:-19.9887,q:'셀랴란드스포스'},
+  {emoji:'⛰',name:'스코가포스',cat:'남부해안',col:'#7ab8d4',lat:63.5322,lng:-19.5108,q:'스코가포스'},
+  {emoji:'🖤',name:'레이니스피야라',cat:'남부해안',col:'#6a7a8a',lat:63.4046,lng:-19.0440,q:'레이니스피야라 흑사장'},
+  {emoji:'🧊',name:'요쿨살론',cat:'남부해안',col:'#7ab8d4',lat:64.0483,lng:-16.1795,q:'요쿨살론 빙하호수'},
+  {emoji:'💎',name:'다이아몬드비치',cat:'남부해안',col:'#7ab8d4',lat:64.0432,lng:-16.1747,q:'다이아몬드 비치'},
+  {emoji:'🏔',name:'스카프타펠',cat:'남부해안',col:'#5bb89e',lat:63.9959,lng:-16.9750,q:'스카프타펠 빙하하이킹'},
+  {emoji:'🌋',name:'데티포스',cat:'북부',col:'#7d87c8',lat:65.8149,lng:-16.3840,q:'데티포스 폭포'},
+  {emoji:'♨',name:'나우마스카르드',cat:'북부',col:'#7d87c8',lat:65.6380,lng:-16.8230,q:'나우마스카르드'},
+  {emoji:'🐋',name:'달빅',cat:'북부',col:'#7d87c8',lat:65.9714,lng:-18.5267,q:'달빅 고래관찰'},
+  {emoji:'💧',name:'고다포스',cat:'북부',col:'#7d87c8',lat:65.6829,lng:-17.5500,q:'고다포스 폭포'},
+  {emoji:'🗻',name:'키르큐펠',cat:'스나이펠스',col:'#c8a66c',lat:64.9280,lng:-23.3078,q:'키르큐펠 산'},
+  {emoji:'🌊',name:'블루라군',cat:'온천',col:'#4a8fa8',lat:63.8805,lng:-22.4494,q:'블루라군'},
+  {emoji:'🌅',name:'스카이라군',cat:'온천',col:'#4a8fa8',lat:64.1190,lng:-21.9760,q:'스카이라군'},
+];
+
+/* ── Leaflet Map ── */
+window._leafReady = false;
+function initLeaf() {
+  window._leafReady = true;
+  const lc = document.createElement('link');
+  lc.rel = 'stylesheet';
+  lc.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+  document.head.appendChild(lc);
+  const ls = document.createElement('script');
+  ls.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+  ls.onload = () => buildMap();
+  document.head.appendChild(ls);
+}
+
+function buildMap() {
+  const map = L.map('leafmap', {center:[64.9,-18.5],zoom:6,zoomControl:true});
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution:'&copy; OpenStreetMap &copy; CartoDB',subdomains:'abcd',maxZoom:19
+  }).addTo(map);
+
+  window._map = map;
+  window._hotelMarkers = [];
+
+  /* 숙소 핀 — 둥근 번호 */
+  hotels.forEach(h => {
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="width:34px;height:34px;background:${h.color};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#0c1018;border:2.5px solid rgba(255,255,255,.85);box-shadow:0 2px 10px rgba(0,0,0,.6);font-family:'Noto Sans KR',sans-serif">${h.n}</div>`,
+      iconSize:[34,34],iconAnchor:[17,17],popupAnchor:[0,-20]
+    });
+    const m = L.marker([h.lat,h.lng],{icon}).addTo(map).bindPopup(`
+      <div style="font-family:'Noto Sans KR',sans-serif;min-width:190px;padding:4px 0">
+        <div style="font-size:9.5px;color:#888;letter-spacing:.05em;margin-bottom:3px">${h.region}</div>
+        <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:2px">${h.name}</div>
+        <div style="font-size:11.5px;color:#555;margin-bottom:6px">${h.note}</div>
+        <div style="font-size:13px;font-weight:700;color:#b07a30;margin-bottom:10px">${h.price}</div>
+        <div style="display:flex;gap:6px">
+          <a href="${h.airbnb}" target="_blank" style="font-size:11.5px;color:#fff;background:#e05c2f;padding:5px 10px;border-radius:6px;text-decoration:none;font-weight:600">🏠 에어비앤비</a>
+          <a href="${h.gmap}" target="_blank" style="font-size:11.5px;color:#fff;background:#4285f4;padding:5px 10px;border-radius:6px;text-decoration:none;font-weight:600">📍 구글지도</a>
+        </div>
+      </div>`,{maxWidth:230});
+    window._hotelMarkers.push(m);
+  });
+
+  /* 여행지 핀 — 이모지 마커 */
+  spotPins.forEach(s => {
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="background:${s.col}22;border:1.5px solid ${s.col}66;border-radius:8px;padding:4px 6px;display:flex;align-items:center;gap:4px;white-space:nowrap;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.5)"><span style="font-size:14px">${s.emoji}</span><span style="font-size:10px;font-weight:700;color:#e8edf5;font-family:'Noto Sans KR',sans-serif">${s.name}</span></div>`,
+      iconAnchor:[0,0],popupAnchor:[60,0]
+    });
+    L.marker([s.lat,s.lng],{icon}).addTo(map).bindPopup(`
+      <div style="font-family:'Noto Sans KR',sans-serif;padding:2px 0">
+        <div style="font-size:9.5px;color:#888;margin-bottom:3px">${s.cat}</div>
+        <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:8px">${s.emoji} ${s.name}</div>
+        <a href="https://www.google.com/search?q=${encodeURIComponent(s.q)}" target="_blank" style="font-size:11.5px;color:#fff;background:#4285f4;padding:5px 10px;border-radius:6px;text-decoration:none;font-weight:600">🔍 구글 검색</a>
+      </div>`,{maxWidth:200});
+  });
+
+  /* 숙소 카드 빌드 */
+  document.getElementById('accomCards').innerHTML = hotels.map((h,i) => `
+    <div class="acard" onclick="focusHotel(${i})">
+      <div class="acard-num" style="background:${h.color}22;color:${h.color};border:1.5px solid ${h.color}55">${h.n}</div>
+      <div class="acard-region">${h.region}</div>
+      <div class="acard-name">${h.name}</div>
+      <div class="acard-type">${h.type}</div>
+      <div class="acard-price">${h.price}</div>
+      <div class="acard-links">
+        <a class="acard-link" href="${h.airbnb}" target="_blank" onclick="e=>e.stopPropagation()">🏠 에어비앤비</a>
+        <a class="acard-link" href="${h.gmap}" target="_blank" onclick="e=>e.stopPropagation()">📍 구글 지도</a>
+      </div>
+      <div class="acard-note">${h.note}</div>
+    </div>`).join('');
+
+  /* 여행지 카드 빌드 (목록용) */
+  document.getElementById('spotCards').innerHTML = spotPins.map(s => `
+    <div class="scard" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(s.q)}','_blank')">
+      <div class="scard-icon">${s.emoji}</div>
+      <div>
+        <div class="scard-name">${s.name}</div>
+        <div class="scard-cat">${s.cat}</div>
+      </div>
+    </div>`).join('');
+}
+
+function focusHotel(i) {
+  if (!window._map || !window._hotelMarkers) return;
+  const h = hotels[i];
+  window._map.setView([h.lat, h.lng], 12, {animate:true});
+  window._hotelMarkers[i].openPopup();
+  // 지도 탭으로 스크롤
+  document.getElementById('leafmap').scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+</body>
+</html>
